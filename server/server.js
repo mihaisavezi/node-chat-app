@@ -13,7 +13,18 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 io.on('connection', (socket) => {
-    console.log('New user connected');
+
+    socket.emit('newMessage', {
+        from: "Admin",
+        text: "Welcome to chat app",
+        createdAt: new Date().getTime()
+    });
+
+    socket.broadcast.emit('newMessage', {
+        from: "Admin",
+        text: "new user joined",
+        createdAt: new Date().getTime()
+    })
 
     socket.on('createMessage', (newMessage) => {
         console.log('createMessage', newMessage);
@@ -23,6 +34,12 @@ io.on('connection', (socket) => {
             text: newMessage.text,
             createdAt: new Date().getTime()
         })
+
+        // socket.broadcast.emit('newMessage', {
+        //     from: newMessage.from,
+        //     text: newMessage.text,
+        //     createdAt: new Date().getTime()
+        // })
     })
 
     socket.on('disconnect', () => {
